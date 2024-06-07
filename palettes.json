@@ -1,0 +1,64 @@
+{
+    "palettes": [
+        {
+            "name": "Tranquil Waters",
+            "colors": ["#004d6c", "#007bac", "#2d9caf", "#80c5d3", "#b1e0e8", "#e2f3f5"]
+        },
+        {
+            "name": "Autumn Blaze",
+            "colors": ["#7f2718", "#b83b21", "#e85a27", "#f6a677", "#f9cbae", "#f5e6d4"]
+        },
+        {
+            "name": "Lavender Fields",
+            "colors": ["#4d396c", "#7b5aa9", "#9a79c5", "#c3a5e3", "#e1cef7", "#f4e9fc"]
+        },
+        {
+            "name": "Tropical Punch",
+            "colors": ["#8a2212", "#c9351b", "#e84a27", "#f5947f", "#f8c5b6", "#fdeee4"]
+        },
+        {
+            "name": "Misty Meadows",
+            "colors": ["#274348", "#3c6a71", "#5c8f8f", "#9dc3c5", "#cbdddd", "#eef5f5"]
+        },
+        {
+            "name": "Desert Sunset",
+            "colors": ["#8c3d1e", "#d25d2e", "#e58a4f", "#f5bca0", "#fad9c9", "#fdf2e9"]
+        },
+        {
+            "name": "Evergreen Forest",
+            "colors": ["#003a28", "#005e40", "#008d5b", "#00b978", "#4dd19b", "#a8e5c2"]
+        },
+        {
+            "name": "Midnight Bloom",
+            "colors": ["#1d112e", "#2f1d4a", "#4b2d74", "#7a58a3", "#af9dc7", "#e1d9eb"]
+        },
+        {
+            "name": "Coral Reef",
+            "colors": ["#8f331e", "#d84c2e", "#e97358", "#f7a998", "#fad0c3", "#fde9e2"]
+        },
+        {
+            "name": "Ocean Breeze",
+            "colors": ["#003b49", "#005f73", "#008fa2", "#4dbdca", "#9adfe0", "#d7f4f7"]
+        },
+        {
+            "name": "Sunset Glow",
+            "colors": ["#7a2809", "#ba3f0c", "#e55f1e", "#f99a70", "#fcd0b1", "#feecd9"]
+        },
+        {
+            "name": "Sage Serenity",
+            "colors": ["#3a4d35", "#5b7a54", "#7d9d73", "#b2c7a9", "#d9e7d3", "#f4f8f2"]
+        },
+        {
+            "name": "Plum Delight",
+            "colors": ["#441c3b", "#6c2c5c", "#9a4283", "#c877af", "#e2b4d6", "#f6e8f3"]
+        },
+        {
+            "name": "Summer Citrus",
+            "colors": ["#8c5f17", "#d69325", "#e8b34b", "#f6d495", "#fbedc7", "#fefaf2"]
+        },
+        {
+            "name": "Midnight Sky",
+            "colors": ["#070f19", "#0d1b2a", "#152e49", "#466c8b", "#8aa2bd", "#d5e2eb"]
+        }
+    ]
+}

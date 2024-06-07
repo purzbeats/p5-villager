@@ -1,55 +1,73 @@
 let font;
-let gridSize = 20;
+let gridSize = 24;
 let cols, rows;
-let margin = 20; // Margin around the grid
-let paletteHex = [
-    "#080102", // Dark Red
-    "#1d0507", // Dark Green
-    "#450a0b", // Dark Blue
-    "#85110c", // Dark Yellow
-    "#2896a7", // Cyan
-    "#23424f"  // Dark Magenta
-];
-let palette = [];
+let margin = 36; // Margin around the grid
+let palettes = [];
+let currentPalette = [];
+let seed;
+let selectedPaletteIndex; // New global variable
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 function preload() {
-    font = loadFont('myFont.otf');
+    font = loadFont('fonts/MEKMODE-Dings.otf');
+    font2 = loadFont('fonts/MEKMODE-Text.otf'); // Load the second font
+    loadJSON('palettes.json', loadPalettes);
+}
+
+function loadPalettes(data) {
+    palettes = data.palettes;
+    if (palettes.length > 0) {
+        // Select a random palette
+        const randomIndex = getRandomInt(0, palettes.length - 1);
+        currentPalette = palettes[randomIndex].colors.map(hex => color(hex));
+        selectedPaletteIndex = randomIndex; // Store the selected palette index
+    } else {
+        currentPalette = []; // Empty palette if no palettes loaded
+        selectedPaletteIndex = -1; // Set to -1 to indicate no palette selected
+    }
 }
 
 function setup() {
-    createCanvas(900, 900); // Increase canvas size to accommodate margin and border
+    const textHeight = 0; // Estimate the height needed for the text
+    createCanvas(800, 800 + textHeight); // Increase canvas height
     textFont(font);
-    textSize(14);
+    textSize(18);
     textAlign(CENTER, CENTER);
 
     // Calculate the number of columns and rows to fit within the canvas, minus the margin
     cols = floor((width - 2 * margin) / gridSize);
     rows = floor((height - 2 * margin) / gridSize);
 
-    noiseDetail(3, 0.7);
+    // Generate a random seed
+    seed = floor(random(1000000));
+    noiseSeed(seed);
+    noiseDetail(3, 0.3);
 
-    // Convert hex codes to p5.js color objects
-    for (let i = 0; i < paletteHex.length; i++) {
-        palette.push(color(paletteHex[i]));
+    // Set the background to the first color in the current palette
+    if (currentPalette.length > 0) {
+        background(currentPalette[0]);
+    } else {
+        background(255); // Default to white if palette is not loaded
     }
-
-    // Set the background to the first color in the palette
-    background(palette[0]);
 }
 
 function draw() {
     // Background is already set in setup, no need to clear it every frame
+    textFont(font);
     let centerX = width / 2;
     let centerY = height / 2;
     let maxDist = dist(0, 0, centerX, centerY);
-    let xoff = 0;
+    let xoff = seed; // Start with the seed value
 
     // Calculate the starting points to center the grid
     let startX = (width - cols * gridSize) / 2;
     let startY = (height - rows * gridSize) / 2;
 
     for (let i = 0; i < cols; i++) {
-        let yoff = 0;
+        let yoff = seed; // Start with the seed value
         for (let j = 0; j < rows; j++) {
             let n = noise(xoff, yoff);
             let char = charFromNoise(n);
@@ -61,23 +79,49 @@ function draw() {
 
             fill(c);
             text(char, x, y);
-            yoff += 0.1;
+            yoff += 0.1; // Increment yoff for the next row
         }
-        xoff += 0.1;
+        xoff += 0.1; // Increment xoff for the next column
     }
+    
+    // displayPaletteInfo(); // Call the new function to display palette info
 }
 
-function charFromNoise(n) {
-    const chars = "abcdefgh";
-    let index = floor(n * chars.length);
-    return chars.charAt(index);
+function displayPaletteInfo() {
+    const paletteInfo = `Palette: ${selectedPaletteIndex >= 0 ? palettes[selectedPaletteIndex].name : 'None'}`;
+    const infoX = width / 2;
+    const infoY = height - margin;
+
+    let textColor;
+    if (selectedPaletteIndex >= 0) {
+        // Get the final (brightest) color from the current palette
+        const paletteColors = palettes[selectedPaletteIndex].colors;
+        const finalColor = color(paletteColors[paletteColors.length - 1]);
+        textColor = finalColor;
+    } else {
+        // Use black as the default text color if no palette is loaded
+        textColor = color(0);
+    }
+
+    noStroke();
+    fill(textColor);
+    textFont(font2); // Use the second font
+    textSize(16); // Adjust the text size as desired
+    textAlign(CENTER, TOP);
+    text(paletteInfo, infoX, infoY);
 }
+
+    function charFromNoise(n) {
+        const chars = "nmopwxyz";
+        let index = floor(n * chars.length);
+        return chars.charAt(index);
+    }
 
 function colorFromPalette(n, t) {
-    let paletteSize = palette.length;
+    let paletteSize = currentPalette.length;
     let colorIndex = floor(n * (paletteSize - 1));
     let nextColorIndex = (colorIndex + 1) % paletteSize;
-    let color = interpolateColor(palette[colorIndex], palette[nextColorIndex], t);
+    let color = interpolateColor(currentPalette[colorIndex], currentPalette[nextColorIndex], t);
     return color;
 }
 
