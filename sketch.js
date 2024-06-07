@@ -7,6 +7,9 @@ let currentPalette = [];
 let seed;
 let selectedPaletteIndex; // New global variable
 let charactersSets = [];
+// const charOption = ["HIJaghKL890"];    
+const charOption = ["abcdefg", "hijklmn", "fneia8", "ABCMWVSXjz", "slipstream", "turtlefarts", "87234", "HIJaghKL890"];    
+const randomIndex = getRandomInt(0, charOption.length - 1);
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -16,11 +19,6 @@ function preload() {
     font = loadFont('fonts/MEKMODE-Dings.otf');
     font2 = loadFont('fonts/MEKMODE-Text.otf'); // Load the second font
     loadJSON('palettes.json', loadPalettes);
-    // loadJSON('characters.json', loadCharacterSets);
-}
-
-function loadCharacterSets(data) {
-    charactersSets = data.charactersSets;
 }
 
 function loadPalettes(data) {
@@ -42,7 +40,7 @@ function setup() {
     textFont(font);
     textSize(18);
     textAlign(CENTER, CENTER);
-    let noiseDetailMult = random(0.1, 0.2);
+    let noiseDetailMult = random(0.1, 0.7);
 
     // Calculate the number of columns and rows to fit within the canvas, minus the margin
     cols = floor((width - 2 * margin) / gridSize);
@@ -51,7 +49,7 @@ function setup() {
     // Generate a random seed
     seed = floor(random(1000000));
     noiseSeed(seed);
-    noiseDetail(3, noiseDetailMult);
+    noiseDetail(2, noiseDetailMult);
 
     // Set the background to the first color in the current palette
     if (currentPalette.length > 0) {
@@ -66,7 +64,7 @@ function draw() {
     textFont(font);
     let centerX = width / 2;
     let centerY = height / 2;
-    let maxDist = dist(0, 0, centerX, centerY);
+    let maxDist = dist(4, 4, centerX, centerY);
     let xoff = seed; // Start with the seed value
 
     // Calculate the starting points to center the grid
@@ -119,7 +117,7 @@ function displayPaletteInfo() {
 }
 
     function charFromNoise(n) {
-        const chars = "abc";
+        const chars = charOption[randomIndex];
         let index = floor(n * chars.length);
         return chars.charAt(index);
     }
