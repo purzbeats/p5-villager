@@ -36,6 +36,7 @@ function loadPalettes(data) {
 }
 
 function setup() {
+    pixelDensity(3);
     const textHeight = 0; // Estimate the height needed for the text
     createCanvas(800, 800 + textHeight); // Increase canvas height
     textFont(font);
