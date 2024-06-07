@@ -1,5 +1,5 @@
 let font;
-let gridSize = 24;
+let gridSize = 26;
 let cols, rows;
 let margin = 36; // Margin around the grid
 let palettes = [];
@@ -39,7 +39,7 @@ function setup() {
     const textHeight = 0; // Estimate the height needed for the text
     createCanvas(800, 800 + textHeight); // Increase canvas height
     textFont(font);
-    textSize(18);
+    textSize(24);
     textAlign(CENTER, CENTER);
     let noiseDetailMult = random(0.1, 0.7);
     let randomBG = random(1);
