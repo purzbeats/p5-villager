@@ -6,6 +6,7 @@ let palettes = [];
 let currentPalette = [];
 let seed;
 let selectedPaletteIndex; // New global variable
+let charactersSets = [];
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -15,6 +16,11 @@ function preload() {
     font = loadFont('fonts/MEKMODE-Dings.otf');
     font2 = loadFont('fonts/MEKMODE-Text.otf'); // Load the second font
     loadJSON('palettes.json', loadPalettes);
+    // loadJSON('characters.json', loadCharacterSets);
+}
+
+function loadCharacterSets(data) {
+    charactersSets = data.charactersSets;
 }
 
 function loadPalettes(data) {
@@ -36,6 +42,7 @@ function setup() {
     textFont(font);
     textSize(18);
     textAlign(CENTER, CENTER);
+    let noiseDetailMult = random(0.1, 0.2);
 
     // Calculate the number of columns and rows to fit within the canvas, minus the margin
     cols = floor((width - 2 * margin) / gridSize);
@@ -44,7 +51,7 @@ function setup() {
     // Generate a random seed
     seed = floor(random(1000000));
     noiseSeed(seed);
-    noiseDetail(3, 0.3);
+    noiseDetail(3, noiseDetailMult);
 
     // Set the background to the first color in the current palette
     if (currentPalette.length > 0) {
@@ -112,7 +119,7 @@ function displayPaletteInfo() {
 }
 
     function charFromNoise(n) {
-        const chars = "nmopwxyz";
+        const chars = "abc";
         let index = floor(n * chars.length);
         return chars.charAt(index);
     }

@@ -1,0 +1,16 @@
+{
+  "charactersSets": [
+    {
+      "name": "Set 1",
+      "characters": "abcdef"
+    },
+    {
+      "name": "Set 2",
+      "characters": "123456"
+    },
+    {
+      "name": "Set 3",
+      "characters": "789"
+    }
+  ]
+}
