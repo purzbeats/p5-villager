@@ -8,8 +8,9 @@ let seed;
 let selectedPaletteIndex; // New global variable
 let charactersSets = [];
 // const charOption = ["HIJaghKL890"];    
-const charOption = ["abcdefg", "hijklmn", "fneia8", "ABCMWVSXjz", "slipstream", "turtlefarts", "87234", "HIJaghKL890"];    
+const charOption = [" abcdefg", "hijklmn ", "fneia8", "ABCMWVSXjz", "slipstream", "turtlefarts", "87234", "HIJaghKL890"];    
 const randomIndex = getRandomInt(0, charOption.length - 1);
+let paletteNameElement; // Global variable to store the HTML element
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -41,6 +42,7 @@ function setup() {
     textSize(18);
     textAlign(CENTER, CENTER);
     let noiseDetailMult = random(0.1, 0.7);
+    let randomBG = random(1);
 
     // Calculate the number of columns and rows to fit within the canvas, minus the margin
     cols = floor((width - 2 * margin) / gridSize);
@@ -53,10 +55,16 @@ function setup() {
 
     // Set the background to the first color in the current palette
     if (currentPalette.length > 0) {
-        background(currentPalette[0]);
+        if (randomBG > 0.5) {
+            background(currentPalette[0]);
+        } else {
+            background(0);
+        }
+            
     } else {
         background(255); // Default to white if palette is not loaded
     }
+
 }
 
 function draw() {
@@ -89,31 +97,14 @@ function draw() {
         xoff += 0.1; // Increment xoff for the next column
     }
     
-    // displayPaletteInfo(); // Call the new function to display palette info
+    displayPaletteInfo(); // Call the new function to display palette info
 }
 
 function displayPaletteInfo() {
     const paletteInfo = `Palette: ${selectedPaletteIndex >= 0 ? palettes[selectedPaletteIndex].name : 'None'}`;
-    const infoX = width / 2;
-    const infoY = height - margin;
 
-    let textColor;
-    if (selectedPaletteIndex >= 0) {
-        // Get the final (brightest) color from the current palette
-        const paletteColors = palettes[selectedPaletteIndex].colors;
-        const finalColor = color(paletteColors[paletteColors.length - 1]);
-        textColor = finalColor;
-    } else {
-        // Use black as the default text color if no palette is loaded
-        textColor = color(0);
-    }
-
-    noStroke();
-    fill(textColor);
-    textFont(font2); // Use the second font
-    textSize(16); // Adjust the text size as desired
-    textAlign(CENTER, TOP);
-    text(paletteInfo, infoX, infoY);
+    // Set the content of the HTML element to the palette name
+    paletteNameElement.html(paletteInfo);
 }
 
     function charFromNoise(n) {
