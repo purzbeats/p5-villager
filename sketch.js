@@ -7,8 +7,9 @@ let currentPalette = [];
 let seed;
 let selectedPaletteIndex; // New global variable
 let charactersSets = [];
-// const charOption = ["HIJaghKL890"];    
-const charOption = [" abcdefg", "hijklmn ", "fneia8", "ABCMWVSXjz", "slipstream", "turtlefarts", "87234", "HIJaghKL890"];    
+// const charOption = ["_"];    
+// const charOption = ["fgp_!m6GvC"];    
+const charOption = [" abcdefg", "hijklmn ", "fneia8", "ABCMWVSXjz", "slipstream", "turtlefarts", "87234", "HIJaghKL890", "fgp_!m6GvC"];    
 const randomIndex = getRandomInt(0, charOption.length - 1);
 let paletteNameElement; // Global variable to store the HTML element
 
@@ -83,16 +84,11 @@ function draw() {
     for (let i = 0; i < cols; i++) {
         let yoff = seed; // Start with the seed value
         for (let j = 0; j < rows; j++) {
+            let x = startX + i * gridSize;
+            let y = startY + j * gridSize;
             let n = noise(xoff, yoff);
-            let char = charFromNoise(n);
-            let x = startX + i * gridSize + gridSize / 2;
-            let y = startY + j * gridSize + gridSize / 2;
-            let d = distanceFromCenter(x, y, centerX, centerY);
-            let t = map(d, 0, maxDist, 0, 1);
-            let c = colorFromPalette(n, t);
-
-            fill(c);
-            text(char, x, y);
+            let level = floor(map(n, 0, 1, 0, 3)); // Determine subdivision level based on noise
+            subdivideGrid(x, y, gridSize, gridSize, level, 24); // Pass initial font size
             yoff += 0.1; // Increment yoff for the next row
         }
         xoff += 0.1; // Increment xoff for the next column
@@ -101,18 +97,48 @@ function draw() {
     displayPaletteInfo(); // Call the new function to display palette info
 }
 
+function subdivideGrid(x, y, w, h, level, fontSize) {
+    if (level <= 0) {
+        drawCharacter(x + w / 2, y + h / 2, fontSize);
+        return;
+    }
+
+    let halfW = w / 2;
+    let halfH = h / 2;
+    let newFontSize = fontSize / 2;
+
+    subdivideGrid(x, y, halfW, halfH, level - 1, newFontSize); // Top-left
+    subdivideGrid(x + halfW, y, halfW, halfH, level - 1, newFontSize); // Top-right
+    subdivideGrid(x, y + halfH, halfW, halfH, level - 1, newFontSize); // Bottom-left
+    subdivideGrid(x + halfW, y + halfH, halfW, halfH, level - 1, newFontSize); // Bottom-right
+}
+
+function drawCharacter(x, y, fontSize) {
+    textSize(fontSize);
+    let n = noise(x / width, y / height);
+    let char = charFromNoise(n);
+    let d = distanceFromCenter(x, y, width / 2, height / 2);
+    let t = map(d, 0, dist(4, 4, width / 2, height / 2), 0, 1);
+    let c = colorFromPalette(n, t);
+
+    fill(c);
+    text(char, x, y);
+}
+
 function displayPaletteInfo() {
     const paletteInfo = `Palette: ${selectedPaletteIndex >= 0 ? palettes[selectedPaletteIndex].name : 'None'}`;
 
     // Set the content of the HTML element to the palette name
-    paletteNameElement.html(paletteInfo);
+    if (paletteNameElement) {
+        paletteNameElement.html(paletteInfo);
+    }
 }
 
-    function charFromNoise(n) {
-        const chars = charOption[randomIndex];
-        let index = floor(n * chars.length);
-        return chars.charAt(index);
-    }
+function charFromNoise(n) {
+    const chars = charOption[randomIndex];
+    let index = floor(n * chars.length);
+    return chars.charAt(index);
+}
 
 function colorFromPalette(n, t) {
     let paletteSize = currentPalette.length;
