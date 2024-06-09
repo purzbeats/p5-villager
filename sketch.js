@@ -1,10 +1,11 @@
 let font;
 let gridSize = 24;
-let margin = 50; // Increased margin around the canvas
+let margin = 15; // Increased margin around the canvas
 let palettes = [];
 let currentPalette = [];
 let paletteNameElement;
 let randomChars = [];
+let backgroundDarkness = 6; // Adjust this value to control the darkness level of the background tiles
 
 function preload() {
     font = loadFont('fonts/MEKMODE-Dings.otf');
@@ -39,8 +40,9 @@ function setupPaletteInfo() {
 }
 
 function generateRandomChars() {
-    const charOption = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-=";
-    for (let i = 0; i < 16; i++) {
+    const charOption = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    // const charOption = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+    for (let i = 0; i < 12; i++) {
         let index = floor(random(charOption.length));
         randomChars.push(charOption.charAt(index));
     }
@@ -55,13 +57,12 @@ function draw() {
     fill(marginColor);
     noStroke();
 
-    // Draw margin rectangles
+    // Draw outer margin rectangles
     rect(0, 0, width, margin); // Top margin
     rect(0, height - margin, width, margin); // Bottom margin
     rect(0, margin, margin, height - 2 * margin); // Left margin
     rect(width - margin, margin, margin, height - 2 * margin); // Right margin
 
-    textSize(18);
     drawGrid();
 }
 
@@ -83,8 +84,18 @@ function drawGrid() {
 function drawCharacter(x, y, n) {
     let char = randomChars[floor(n * randomChars.length)]; // Select a random character from the set
     let t = map(dist(x, y, width / 2, height / 2), 0, dist(0, 0, width / 2, height / 2), 0, 1);
-    let c = colorFromPalette(n, t);
-    fill(c);
+    
+    // Invert the darkness level based on the intensity of the Perlin noise texture and the backgroundDarkness variable
+    let invertedIntensity = map(n, 0, 1, backgroundDarkness, 0); // Invert the mapping of noise to darkness level
+    let darkColor = color(invertedIntensity); // Create a dark gray color
+    
+    // Set the text color based on noise intensity
+    let textColor = colorFromPalette(n, t); // Determine text color based on noise intensity
+    
+    fill(darkColor);
+    rect(x, y, gridSize, gridSize); // Draw background rectangle
+    fill(textColor);
+    textSize(20);
     text(char, x + gridSize / 2, y + gridSize / 2);
 }
 
