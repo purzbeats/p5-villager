@@ -6,6 +6,7 @@ let currentPalette = [];
 let paletteNameElement;
 let randomChars = [];
 let backgroundDarkness = 6; // Adjust this value to control the darkness level of the background tiles
+let seedValue = 1; // Set your desired seed value here
 
 function preload() {
     font = loadFont('fonts/MEKMODE-Dings.otf');
@@ -14,24 +15,36 @@ function preload() {
 
 function loadPalettes(data) {
     palettes = data.palettes;
-    if (palettes.length > 0) {
-        const randomIndex = floor(random(palettes.length)); // Select a random palette
-        currentPalette = palettes[randomIndex].colors.map(hex => color(hex));
-    }
 }
 
 function setup() {
+    // Set seed value for noise and randomization
+    randomSeed(seedValue);
+    noiseSeed(seedValue);
+
     // Calculate the canvas size to ensure it is evenly divisible by the grid size
     let canvasSize = gridSize * floor((800 - 2 * margin) / gridSize);
     createCanvas(canvasSize + 2 * margin, canvasSize + 2 * margin);
     
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'r') {
+            // Regenerate seed value and redraw the canvas
+            seedValue = floor(random(10000)); // Generate a new random seed
+            randomSeed(seedValue); // Set seed for random function
+            noiseSeed(seedValue); // Set seed for noise function
+            selectPalette(); // Select new palette based on the updated seed value
+            redraw(); // Redraw the canvas
+        }
+    });
+
     textFont(font);
     textAlign(CENTER, CENTER);
     noLoop();
     setupPaletteInfo();
-
+    selectPalette();
     // Generate random characters
     generateRandomChars();
+    
 }
 
 function setupPaletteInfo() {
@@ -39,9 +52,16 @@ function setupPaletteInfo() {
     displayPaletteInfo();
 }
 
+function selectPalette() {
+    if (palettes.length > 0) {
+        // Select palette based on seedValue
+        let randomIndex = floor(random(seedValue, seedValue + palettes.length));
+        currentPalette = palettes[randomIndex % palettes.length].colors.map(hex => color(hex));
+    }
+}
+
 function generateRandomChars() {
     const charOption = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    // const charOption = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
     for (let i = 0; i < 12; i++) {
         let index = floor(random(charOption.length));
         randomChars.push(charOption.charAt(index));
@@ -73,7 +93,7 @@ function drawGrid() {
     while (y + gridSize <= height - margin) {
         x = margin;
         while (x + gridSize <= width - margin) {
-            let n = noise(x / width, y / height);
+            let n = seededNoise(x / width, y / height);
             drawCharacter(x, y, n); // Pass noise value to drawCharacter function
             x += gridSize;
         }
@@ -115,4 +135,11 @@ function displayPaletteInfo() {
     if (paletteNameElement) {
         paletteNameElement.html(`Palette: ${paletteInfo}`);
     }
+}
+
+// Seeded Perlin noise generator
+function seededNoise(x, y) {
+    let xNoise = noise(x, y);
+    let yNoise = noise(y, x);
+    return noise(xNoise, yNoise);
 }
